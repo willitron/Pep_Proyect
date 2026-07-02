@@ -1,0 +1,133 @@
+import sqlite3
+
+def crear_base_de_datos(db_name="sistema_empresas.db"):
+    # Conectar a la base de datos (se creará el archivo si no existe)
+    conn = sqlite3.connect(db_name)
+    cursor = conn.cursor()
+
+    # Habilitar el soporte de claves foráneas en SQLite
+    cursor.execute("PRAGMA foreign_keys = ON;")
+
+    # 1. Tabla: USUARIOS
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS usuarios (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre TEXT NOT NULL,
+            email TEXT NOT NULL UNIQUE,
+            password_hash TEXT NOT NULL,
+            tipo TEXT NOT NULL,
+            fecha_registro TEXT NOT NULL
+        );
+    """)
+
+    # 2. Tabla: RUBROS
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS rubros (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre TEXT NOT NULL,
+            descripcion TEXT
+        );
+    """)
+
+    # 3. Tabla: PLANES
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS planes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre TEXT NOT NULL,
+            precio_mensual REAL NOT NULL,
+            precio_anual REAL NOT NULL,
+            sello_destacado INTEGER DEFAULT 0
+        );
+    """)
+
+    # 4. Tabla: EMPRESAS
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS empresas (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            usuario_id INTEGER NOT NULL,
+            rubro_id INTEGER NOT NULL,
+            razon_social TEXT NOT NULL,
+            nit TEXT,
+            matricula_seprec TEXT,
+            latitud REAL,
+            longitud REAL,
+            whatsapp TEXT,
+            sello_verificado INTEGER DEFAULT 0,
+            estado TEXT NOT NULL,
+            FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+            FOREIGN KEY (rubro_id) REFERENCES rubros(id) ON DELETE RESTRICT
+        );
+    """)
+
+    # 5. Tabla: SUSCRIPCIONES
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS suscripciones (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            empresa_id INTEGER NOT NULL,
+            plan_id INTEGER NOT NULL,
+            fecha_inicio TEXT NOT NULL,
+            fecha_fin TEXT NOT NULL,
+            estado TEXT NOT NULL,
+            FOREIGN KEY (empresa_id) REFERENCES empresas(id) ON DELETE CASCADE,
+            FOREIGN KEY (plan_id) REFERENCES planes(id) ON DELETE RESTRICT
+        );
+    """)
+
+    # 6. Tabla: RESENAS
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS resenas (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            empresa_id INTEGER NOT NULL,
+            usuario_id INTEGER NOT NULL,
+            calificacion INTEGER NOT NULL,
+            comentario TEXT,
+            fecha TEXT NOT NULL,
+            FOREIGN KEY (empresa_id) REFERENCES empresas(id) ON DELETE CASCADE,
+            FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+        );
+    """)
+
+    # 7. Tabla: VERIFICACIONES_SEPREC
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS verificaciones_seprec (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            empresa_id INTEGER NOT NULL,
+            nit_validado INTEGER DEFAULT 0,
+            matricula_validada INTEGER DEFAULT 0,
+            fecha_verificacion TEXT NOT NULL,
+            FOREIGN KEY (empresa_id) REFERENCES empresas(id) ON DELETE CASCADE
+        );
+    """)
+
+    # 8. Tabla: INTERACCIONES
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS interacciones (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            empresa_id INTEGER NOT NULL,
+            usuario_id INTEGER NOT NULL,
+            tipo TEXT NOT NULL,
+            fecha TEXT NOT NULL,
+            FOREIGN KEY (empresa_id) REFERENCES empresas(id) ON DELETE CASCADE,
+            FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+        );
+    """)
+
+    # 9. Tabla: PUBLICIDAD
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS publicidad (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            empresa_id INTEGER NOT NULL,
+            fecha_inicio TEXT NOT NULL,
+            fecha_fin TEXT NOT NULL,
+            posicion_prioridad INTEGER NOT NULL,
+            FOREIGN KEY (empresa_id) REFERENCES empresas(id) ON DELETE CASCADE
+        );
+    """)
+
+    # Guardar cambios y cerrar conexión
+    conn.commit()
+    conn.close()
+    print(f"Base de datos '{db_name}' creada y tablas migradas exitosamente.")
+
+if __name__ == "__main__":
+    crear_base_de_datos()

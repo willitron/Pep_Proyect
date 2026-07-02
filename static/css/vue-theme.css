@@ -1,0 +1,123 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+
+:root {
+  --vue-green: #42b883;
+  --vue-dark: #35495e;
+  --vue-bg: #1a1a1a;
+  --vue-text: #ffffff;
+  --vue-accent: #3eaf7c;
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+    color: var(--vue-dark);
+}
+
+.vue-gradient {
+    background: linear-gradient(135deg, var(--vue-dark) 0%, #2c3e50 100%);
+}
+
+.vue-text-green {
+    color: var(--vue-green);
+}
+
+.vue-btn {
+    background-color: var(--vue-green);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.vue-btn:hover {
+    background-color: var(--vue-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(66, 184, 131, 0.3);
+}
+
+.card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+/* Landing specific overrides */
+.start-page {
+    background: var(--vue-dark) !important;
+}
+
+.start-page h1 span {
+    color: var(--vue-green) !important;
+}
+
+.read-more, .button {
+    background: var(--vue-green) !important;
+    border: none !important;
+    border-radius: 25px !important;
+    color: white !important;
+}
+
+.menu {
+    background: rgba(53, 73, 94, 0.95) !important;
+}
+
+#menu li a:hover {
+    color: var(--vue-green) !important;
+}
+
+.about-us h1, .portfolio h1, .contact h1 {
+    color: var(--vue-dark);
+    font-weight: 700;
+}
+
+hr {
+    border-color: var(--vue-green) !important;
+    width: 60px;
+    border-width: 3px;
+}
+
+/* Admin Dashboard Styles */
+.admin-sidebar {
+    background: var(--vue-dark);
+    color: white;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.admin-content {
+    padding: 40px;
+    background: #f4f7f6;
+    min-height: 100vh;
+}
+
+.stat-card {
+    border-left: 5px solid var(--vue-green);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background: var(--vue-dark);
+    color: white;
+    text-align: left;
+    padding: 15px;
+}
+
+td {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+tr:hover {
+    background: #f9f9f9;
+}

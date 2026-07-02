@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - PEP System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/vue-theme.css') }}">
+    <style>
+        body {
+            background: linear-gradient(rgba(53, 73, 94, 0.8), rgba(53, 73, 94, 0.8)), 
+                        url('https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&q=80&w=2070') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            backdrop-filter: blur(5px);
+        }
+        .login-box {
+            width: 380px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.15); /* Transparent background */
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            text-align: center;
+            color: white;
+        }
+        input {
+            width: 100%;
+            padding: 14px;
+            margin: 12px 0;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            box-sizing: border-box;
+            color: white;
+            outline: none;
+            transition: 0.3s;
+        }
+        input::placeholder { color: rgba(255, 255, 255, 0.7); }
+        input:focus {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: var(--vue-green);
+        }
+        h1 { color: var(--vue-green); margin-bottom: 5px; font-weight: 700; }
+        p { margin-bottom: 25px; opacity: 0.8; }
+        .hint { color: rgba(255, 255, 255, 0.6); font-size: 0.85em; margin-top: 25px; line-height: 1.5; }
+        .vue-btn {
+            background: var(--vue-green);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.3s;
+        }
+        .vue-btn:hover { background: #3eaf7c; transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h1>PEP SYSTEM</h1>
+        <p>Inicia sesión para continuar</p>
+        <form method="POST">
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Contraseña" required>
+            <button type="submit" class="vue-btn">ENTRAR</button>
+        </form>
+        <div class="hint">
+            Admin: admin@example.com / admin123<br>
+            User: juan@example.com / user123
+        </div>
+        <a href="/" style="display: block; margin-top: 25px; color: var(--vue-green); text-decoration: none; font-weight: 600;">← Volver al inicio</a>
+    </div>
+</body>
+</html>
