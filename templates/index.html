@@ -18,20 +18,10 @@
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/vue-theme.css') }}" />				
 		
     <style>
-        html {
-            scroll-behavior: smooth;
-        }
-        /* Ensure specific sections have enough padding for the fixed menu */
-        section {
-            padding-top: 80px;
-            margin-top: -80px;
-        }
-        #home { padding-top: 0; margin-top: 0; }
-        
         /* Mobile menu fixes */
         .menu-click {
             display: none;
-            background: var(--vue-dark);
+            background: rgba(53, 73, 94, 0.98);
             position: fixed;
             top: 60px;
             left: 0;
@@ -39,16 +29,22 @@
             z-index: 999;
             padding: 20px 0;
             text-align: center;
+            border-bottom: 3px solid var(--vue-green);
         }
         .menu-click li {
             list-style: none;
             padding: 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
         .menu-click a {
             color: white;
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: 1px;
+        }
+        .menu-click a:hover {
+            color: var(--vue-green);
         }
     </style>
 </head>
@@ -70,7 +66,7 @@
           <span>PEP Proyect</span></h1>
           <p>Gestión empresarial con la potencia de Vue.js Style</p>
           
-          <a href="#about-us"><div class="read-more">Ver Más</div></a>
+          <a href="#about-us" class="scroll-link"><div class="read-more">Ver Más</div></a>
           
         </div>
         <div class="arrow-down"></div>
@@ -93,16 +89,16 @@
   </section>
   
     <ul class="menu-click" id="mobile-menu">
-        <li><a href="#home">INICIO</a></li>
-        <li><a href="#about-us">RUBROS</a></li>
-        <li><a href="#portfolio">EMPRESAS</a></li>
+        <li><a href="#home" class="scroll-link">INICIO</a></li>
+        <li><a href="#about-us" class="scroll-link">RUBROS</a></li>
+        <li><a href="#portfolio" class="scroll-link">EMPRESAS</a></li>
         {% if session.get('user_role') == 'admin' %}
         <li><a href="{{ url_for('admin_dashboard') }}">ADMIN</a></li>
         {% endif %}
         {% if session.get('user_name') %}
-        <li><a href="{{ url_for('logout') }}">SALIR ({{ session['user_name'] }})</a></li>
+        <li><a href="{{ url_for('logout') }}" style="color: #ff7675">SALIR</a></li>
         {% else %}
-        <li><a href="{{ url_for('login') }}">LOGIN</a></li>
+        <li><a href="{{ url_for('login') }}">INGRESAR</a></li>
         {% endif %}
     </ul>
    
@@ -116,15 +112,15 @@
     <div class="logo" style="color: var(--vue-green); font-weight: 700; font-size: 24px;">PEP SYSTEM</div>
     
       <ul id="menu">
-        <li><a href="#home">INICIO</a></li>
-        <li><a href="#about-us">RUBROS</a></li>
-        <li><a href="#portfolio">EMPRESAS</a></li>
+        <li><a href="#home" class="scroll-link">INICIO</a></li>
+        <li><a href="#about-us" class="scroll-link">RUBROS</a></li>
+        <li><a href="#portfolio" class="scroll-link">EMPRESAS</a></li>
         {% if session.get('user_role') == 'admin' %}
         <li><a href="{{ url_for('admin_dashboard') }}" style="color: var(--vue-green)">DASHBOARD</a></li>
         {% endif %}
         
         {% if session.get('user_name') %}
-        <li><a href="{{ url_for('logout') }}">SALIR ({{ session['user_name'] }})</a></li>
+        <li><a href="{{ url_for('logout') }}">SALIR</a></li>
         {% else %}
         <li><a href="{{ url_for('login') }}">INGRESAR</a></li>
         {% endif %}
@@ -137,7 +133,7 @@
 
   <!-- section about us -->
   
-  <section class="about-us" id="about-us">
+  <section class="about-us" id="about-us" style="padding-top: 100px;">
   
     <h1>NUESTROS RUBROS</h1>
     <hr/>
@@ -158,7 +154,7 @@
 
   <!-- portoflio-->
 
-  <section class="portfolio" id="portfolio">
+  <section class="portfolio" id="portfolio" style="padding-top: 100px;">
 
 
     <div class="portfolio-margin">
@@ -199,7 +195,7 @@
       
         <h2>Planes Disponibles</h2>
         
-            <div style="display: flex; justify-content: center; gap: 30px; margin-top: 30px;">
+            <div style="display: flex; justify-content: center; gap: 30px; margin-top: 30px; flex-wrap: wrap;">
                 {% for sus in suscripciones %}
                 <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; color: white;">
                     <h3 style="color: var(--vue-green)">{{ sus.plan_nombre }}</h3>
@@ -246,7 +242,7 @@
       
         <div class="menu-footer">
         
-        <a href="#home">Inicio</a>
+        <a href="#home" class="scroll-link">Inicio</a>
         <a href="#">Políticas de Privacidad</a>
         <a href="#">Facebook</a>
         
@@ -265,7 +261,7 @@
 
 	<!-- Scripts -->
 	
-	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script> <!-- jQuery -->
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script> 
 	<script src="{{ url_for('static', filename='js/jquery.parallax.js') }}"></script> 
 	<script src="{{ url_for('static', filename='js/jquery.nicescroll.js') }}"></script> 
 	<script src="{{ url_for('static', filename='js/jquery.sticky.js') }}"></script> 
@@ -279,19 +275,19 @@
                 $('#mobile-menu').slideToggle();
             });
 
-            // Cerrar menu mobile al hacer clic en un link
-            $('#mobile-menu a').click(function() {
-                $('#mobile-menu').slideUp();
-            });
-
-            // Forzar smooth scroll en todos los enlaces internos
-            $('a[href^="#"]').on('click', function(event) {
+            // Smooth scroll solo para links con clase .scroll-link
+            $('.scroll-link').on('click', function(event) {
                 var target = $(this.getAttribute('href'));
                 if( target.length ) {
                     event.preventDefault();
+                    // Cerrar menu mobile si esta abierto
+                    if ($(window).width() < 768) {
+                        $('#mobile-menu').slideUp();
+                    }
+                    
                     $('html, body').stop().animate({
-                        scrollTop: target.offset().top - 70
-                    }, 1000);
+                        scrollTop: target.offset().top - 60
+                    }, 800);
                 }
             });
         });
