@@ -18,38 +18,79 @@
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/vue-theme.css') }}" />				
 		
     <style>
-        /* Mobile menu fixes */
-        .menu-click {
-            display: none;
-            background: rgba(53, 73, 94, 0.98);
-            position: fixed;
-            top: 60px;
-            left: 0;
-            width: 100%;
-            z-index: 999;
-            padding: 20px 0;
-            text-align: center;
-            border-bottom: 3px solid var(--vue-green);
+        /* Modern Mobile Nav Fix */
+        @media (max-width: 768px) {
+            .menu, .menu-media, .menu-click { display: none !important; }
+            
+            .mobile-nav-top {
+                display: flex !important;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 60px;
+                background: var(--vue-dark);
+                z-index: 9999;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0 15px;
+                box-sizing: border-box;
+                border-bottom: 2px solid var(--vue-green);
+                box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            }
+            
+            .mobile-nav-links {
+                display: flex;
+                gap: 10px;
+            }
+            
+            .mobile-nav-links a {
+                color: white;
+                text-decoration: none;
+                font-size: 11px;
+                font-weight: 700;
+                background: rgba(255,255,255,0.1);
+                padding: 8px 10px;
+                border-radius: 6px;
+                text-transform: uppercase;
+                transition: 0.2s;
+            }
+            
+            .mobile-nav-links a:active {
+                background: var(--vue-green);
+            }
+
+            .mobile-logo {
+                color: var(--vue-green);
+                font-weight: 800;
+                font-size: 16px;
+            }
+
+            section { padding-top: 80px !important; }
         }
-        .menu-click li {
-            list-style: none;
-            padding: 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        .menu-click a {
-            color: white;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 18px;
-            letter-spacing: 1px;
-        }
-        .menu-click a:hover {
-            color: var(--vue-green);
-        }
+
+        .mobile-nav-top { display: none; }
+        
+        html { scroll-behavior: smooth; }
     </style>
 </head>
 
 <body>
+
+<!-- ALWAYS VISIBLE MOBILE NAV -->
+<div class="mobile-nav-top">
+    <div class="mobile-logo">PEP SYSTEM</div>
+    <div class="mobile-nav-links">
+        <a href="#home" class="scroll-link">INICIO</a>
+        <a href="#about-us" class="scroll-link">RUBROS</a>
+        <a href="#portfolio" class="scroll-link">EMPRESAS</a>
+        {% if session.get('user_name') %}
+            <a href="{{ url_for('logout') }}" style="background: rgba(255,118,117,0.3)">SALIR</a>
+        {% else %}
+            <a href="{{ url_for('login') }}">INGRESAR</a>
+        {% endif %}
+    </div>
+</div>
 
 <div class="container">
 
@@ -74,37 +115,11 @@
   
   </section>
 
-  <!-- section menu mobile -->
+  <!-- section menu mobile (Hidden in favor of mobile-nav-top) -->
+  <section class="menu-media" style="display:none"></section>
   
-  <section class="menu-media">
-  
-    <div class="menu-content">
-    
-      <div class="logo" style="color: var(--vue-green)">PEP SYSTEM</div>
-      
-      <div class="icon" id="mobile-menu-toggle"><a href="javascript:void(0)"><img src="{{ url_for('static', filename='img/icons/menu-media.png') }}"/></a></div>
-    
-    </div>
    
-  </section>
-  
-    <ul class="menu-click" id="mobile-menu">
-        <li><a href="#home" class="scroll-link">INICIO</a></li>
-        <li><a href="#about-us" class="scroll-link">RUBROS</a></li>
-        <li><a href="#portfolio" class="scroll-link">EMPRESAS</a></li>
-        {% if session.get('user_role') == 'admin' %}
-        <li><a href="{{ url_for('admin_dashboard') }}">ADMIN</a></li>
-        {% endif %}
-        {% if session.get('user_name') %}
-        <li><a href="{{ url_for('logout') }}" style="color: #ff7675">SALIR</a></li>
-        {% else %}
-        <li><a href="{{ url_for('login') }}">INGRESAR</a></li>
-        {% endif %}
-    </ul>
-   
-   
-  <!-- section menu -->
-  
+  <!-- section menu (Desktop) -->
   <section class="menu">
 
     <div class="menu-content">
@@ -133,7 +148,7 @@
 
   <!-- section about us -->
   
-  <section class="about-us" id="about-us" style="padding-top: 100px;">
+  <section class="about-us" id="about-us">
   
     <h1>NUESTROS RUBROS</h1>
     <hr/>
@@ -154,7 +169,7 @@
 
   <!-- portoflio-->
 
-  <section class="portfolio" id="portfolio" style="padding-top: 100px;">
+  <section class="portfolio" id="portfolio">
 
 
     <div class="portfolio-margin">
@@ -263,28 +278,15 @@
 	
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script> 
 	<script src="{{ url_for('static', filename='js/jquery.parallax.js') }}"></script> 
-	<script src="{{ url_for('static', filename='js/jquery.nicescroll.js') }}"></script> 
 	<script src="{{ url_for('static', filename='js/jquery.sticky.js') }}"></script> 
 	<script src="{{ url_for('static', filename='js/script.js') }}"></script> 
 
     <script>
         $(document).ready(function() {
-            // Toggle menu movil
-            $('#mobile-menu-toggle').click(function(e) {
-                e.preventDefault();
-                $('#mobile-menu').slideToggle();
-            });
-
-            // Smooth scroll solo para links con clase .scroll-link
             $('.scroll-link').on('click', function(event) {
                 var target = $(this.getAttribute('href'));
                 if( target.length ) {
                     event.preventDefault();
-                    // Cerrar menu mobile si esta abierto
-                    if ($(window).width() < 768) {
-                        $('#mobile-menu').slideUp();
-                    }
-                    
                     $('html, body').stop().animate({
                         scrollTop: target.offset().top - 60
                     }, 800);
