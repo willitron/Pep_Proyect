@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Rubro - PEP Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/vue-theme.css') }}">
+    <style>
+        body { background: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .edit-card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 500px; }
+        h1 { color: var(--vue-dark); border-bottom: 3px solid var(--vue-green); display: inline-block; padding-bottom: 5px; }
+        label { display: block; margin-top: 15px; font-weight: 600; color: #555; }
+        input { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .actions { margin-top: 30px; display: flex; gap: 10px; }
+        .btn-cancel { background: #eee; color: #333; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="edit-card">
+        <h1>Editar Rubro</h1>
+        <form method="POST">
+            <label>Nombre del Rubro</label>
+            <input type="text" name="nombre" value="{{ rubro.nombre }}" required>
+            
+            <label>Descripción</label>
+            <input type="text" name="descripcion" value="{{ rubro.descripcion }}">
+            
+            <div class="actions">
+                <button type="submit" class="vue-btn" style="flex: 1;">GUARDAR</button>
+                <a href="{{ url_for('admin_dashboard') }}" class="btn-cancel">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

@@ -124,8 +124,28 @@
         .form-inline { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 20px; background: #f9f9f9; padding: 15px; border-radius: 8px; }
         .form-inline input, .form-inline select { padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
         
-        .sidebar a { display: block; color: #ddd; text-decoration: none; padding: 12px; border-radius: 6px; margin: 5px 0; transition: 0.3s; }
         .sidebar a:hover, .sidebar a.active { background: rgba(66, 184, 131, 0.2); color: var(--vue-green); }
+
+        /* Alerts Flotantes */
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-weight: 700;
+            z-index: 9999;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            animation: slideInRight 0.5s ease-out;
+            max-width: 300px;
+        }
+        .alert-success { background: #42b883ea; color: white; border: none; }
+        .alert-warning { background: #f39c12ea; color: white; border: none; }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
     </style>
 </head>
 <body>
@@ -153,7 +173,25 @@
     </div>
 
     <div class="main-content">
-        <h1>Dashboard General</h1>
+        
+        <!-- NOTIFICACIONES FLASH -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }}" id="flash-msg">
+                  {{ '✅' if category == 'success' else '⚠️' }} {{ message }}
+              </div>
+            {% endfor %}
+            <script>
+                setTimeout(function() {
+                    var el = document.getElementById('flash-msg');
+                    if(el) el.style.display = 'none';
+                }, 5000);
+            </script>
+          {% endif %}
+        {% endwith %}
+
+        <h1>Panel Administrativo</h1>
         
         <div class="grid-stats">
             <div class="stat-card"><h3>🏢 Empresas</h3><p>{{ counts.empresas }}</p></div>
@@ -190,8 +228,11 @@
                             <td>{{ e.razon_social }}</td>
                             <td>{{ e.usuario_nombre }}</td>
                             <td>{{ e.rubro_nombre }}</td>
-                            <td>{{ e.estado }}</td>
-                            <td><a href="{{ url_for('delete_empresa', id=e.id) }}" class="btn-del">Eliminar</a></td>
+                            <td><span style="color: var(--vue-green)">{{ e.estado }}</span></td>
+                        <td style="white-space: nowrap;">
+                            <a href="{{ url_for('edit_empresa', id=e.id) }}" style="color: #3498db; margin-right: 10px; font-weight: bold; text-decoration: none;">Editar</a>
+                            <a href="{{ url_for('delete_empresa', id=e.id) }}" class="btn-del">Eliminar</a>
+                        </td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -223,7 +264,10 @@
                             <td>{{ u.nombre }}</td>
                             <td>{{ u.email }}</td>
                             <td>{{ u.tipo }}</td>
-                            <td><a href="{{ url_for('delete_usuario', id=u.id) }}" class="btn-del">Eliminar</a></td>
+                        <td style="white-space: nowrap;">
+                            <a href="{{ url_for('edit_usuario', id=u.id) }}" style="color: #3498db; margin-right: 10px; font-weight: bold; text-decoration: none;">Editar</a>
+                            <a href="{{ url_for('delete_usuario', id=u.id) }}" class="btn-del">Eliminar</a>
+                        </td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -249,7 +293,10 @@
                         <tr>
                             <td>{{ r.nombre }}</td>
                             <td>{{ r.descripcion }}</td>
-                            <td><a href="{{ url_for('delete_rubro', id=r.id) }}" class="btn-del">Eliminar</a></td>
+                        <td style="white-space: nowrap;">
+                            <a href="{{ url_for('edit_rubro', id=r.id) }}" style="color: #3498db; margin-right: 10px; font-weight: bold; text-decoration: none;">Editar</a>
+                            <a href="{{ url_for('delete_rubro', id=r.id) }}" class="btn-del">Eliminar</a>
+                        </td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -279,7 +326,10 @@
                             <td>${{ p.precio_mensual }}</td>
                             <td>${{ p.precio_anual }}</td>
                             <td>{{ 'Sí' if p.sello_destacado else 'No' }}</td>
-                            <td><a href="{{ url_for('delete_plan', id=p.id) }}" class="btn-del">Eliminar</a></td>
+                        <td style="white-space: nowrap;">
+                            <a href="{{ url_for('edit_plan', id=p.id) }}" style="color: #3498db; margin-right: 10px; font-weight: bold; text-decoration: none;">Editar</a>
+                            <a href="{{ url_for('delete_plan', id=p.id) }}" class="btn-del">Eliminar</a>
+                        </td>
                         </tr>
                         {% endfor %}
                     </tbody>

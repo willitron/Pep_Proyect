@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, g
+from flask import Flask, render_template, request, redirect, url_for, session, g, flash
 import sqlite3
 import os
 
@@ -113,7 +113,8 @@ def add_empresa():
     db.execute('INSERT INTO empresas (usuario_id, rubro_id, razon_social, nit, matricula_seprec, estado) VALUES (?, ?, ?, ?, ?, ?)',
                [request.form['usuario_id'], request.form['rubro_id'], request.form['razon_social'], request.form['nit'], request.form['matricula'], 'Activo'])
     db.commit()
-    return redirect(url_for('admin_dashboard'))
+    flash('Empresa agregada exitosamente', 'success')
+    return redirect(url_for('admin_dashboard', _anchor='sec-empresas'))
 
 @app.route('/admin/empresa/delete/<int:id>')
 def delete_empresa(id):
@@ -121,7 +122,27 @@ def delete_empresa(id):
     db = get_db()
     db.execute('DELETE FROM empresas WHERE id = ?', [id])
     db.commit()
-    return redirect(url_for('admin_dashboard'))
+    flash('Empresa eliminada correctamente', 'warning')
+    return redirect(url_for('admin_dashboard', _anchor='sec-empresas'))
+
+@app.route('/admin/empresa/edit/<int:id>', methods=['GET', 'POST'])
+def edit_empresa(id):
+    if session.get('user_role') != 'admin': return redirect(url_for('login'))
+    db = get_db()
+    if request.method == 'POST':
+        db.execute('''
+            UPDATE empresas SET razon_social=?, nit=?, matricula_seprec=?, usuario_id=?, rubro_id=?
+            WHERE id=?
+        ''', [request.form['razon_social'], request.form['nit'], request.form['matricula'], 
+              request.form['usuario_id'], request.form['rubro_id'], id])
+        db.commit()
+        flash('Empresa actualizada exitosamente', 'success')
+        return redirect(url_for('admin_dashboard', _anchor='sec-empresas'))
+    
+    empresa = query_db('SELECT * FROM empresas WHERE id = ?', [id], one=True)
+    usuarios = query_db('SELECT * FROM usuarios')
+    rubros = query_db('SELECT * FROM rubros')
+    return render_template('edit_empresa.html', empresa=empresa, usuarios=usuarios, rubros=rubros)
 
 # USUARIOS CRUD
 @app.route('/admin/usuario/add', methods=['POST'])
@@ -131,7 +152,8 @@ def add_usuario():
     db.execute('INSERT INTO usuarios (nombre, email, password_hash, tipo, fecha_registro) VALUES (?, ?, ?, ?, ?)',
                [request.form['nombre'], request.form['email'], request.form['password'], request.form['tipo'], str(datetime.now())])
     db.commit()
-    return redirect(url_for('admin_dashboard'))
+    flash('Usuario creado exitosamente', 'success')
+    return redirect(url_for('admin_dashboard', _anchor='sec-usuarios'))
 
 @app.route('/admin/usuario/delete/<int:id>')
 def delete_usuario(id):
@@ -139,7 +161,24 @@ def delete_usuario(id):
     db = get_db()
     db.execute('DELETE FROM usuarios WHERE id = ?', [id])
     db.commit()
-    return redirect(url_for('admin_dashboard'))
+    flash('Usuario eliminado', 'warning')
+    return redirect(url_for('admin_dashboard', _anchor='sec-usuarios'))
+
+@app.route('/admin/usuario/edit/<int:id>', methods=['GET', 'POST'])
+def edit_usuario(id):
+    if session.get('user_role') != 'admin': return redirect(url_for('login'))
+    db = get_db()
+    if request.method == 'POST':
+        db.execute('''
+            UPDATE usuarios SET nombre=?, email=?, password_hash=?, tipo=?
+            WHERE id=?
+        ''', [request.form['nombre'], request.form['email'], request.form['password'], request.form['tipo'], id])
+        db.commit()
+        flash('Perfil de usuario actualizado', 'success')
+        return redirect(url_for('admin_dashboard', _anchor='sec-usuarios'))
+    
+    usuario = query_db('SELECT * FROM usuarios WHERE id = ?', [id], one=True)
+    return render_template('edit_usuario.html', usuario=usuario)
 
 # RUBROS CRUD
 @app.route('/admin/rubro/add', methods=['POST'])
@@ -149,7 +188,8 @@ def add_rubro():
     db.execute('INSERT INTO rubros (nombre, descripcion) VALUES (?, ?)',
                [request.form['nombre'], request.form['descripcion']])
     db.commit()
-    return redirect(url_for('admin_dashboard'))
+    flash('Nuevo rubro registrado', 'success')
+    return redirect(url_for('admin_dashboard', _anchor='sec-rubros'))
 
 @app.route('/admin/rubro/delete/<int:id>')
 def delete_rubro(id):
@@ -157,7 +197,22 @@ def delete_rubro(id):
     db = get_db()
     db.execute('DELETE FROM rubros WHERE id = ?', [id])
     db.commit()
-    return redirect(url_for('admin_dashboard'))
+    flash('Rubro eliminado', 'warning')
+    return redirect(url_for('admin_dashboard', _anchor='sec-rubros'))
+
+@app.route('/admin/rubro/edit/<int:id>', methods=['GET', 'POST'])
+def edit_rubro(id):
+    if session.get('user_role') != 'admin': return redirect(url_for('login'))
+    db = get_db()
+    if request.method == 'POST':
+        db.execute('UPDATE rubros SET nombre=?, descripcion=? WHERE id=?', 
+                   [request.form['nombre'], request.form['descripcion'], id])
+        db.commit()
+        flash('Rubro modificado correctamente', 'success')
+        return redirect(url_for('admin_dashboard', _anchor='sec-rubros'))
+    
+    rubro = query_db('SELECT * FROM rubros WHERE id = ?', [id], one=True)
+    return render_template('edit_rubro.html', rubro=rubro)
 
 # PLANES CRUD
 @app.route('/admin/plan/add', methods=['POST'])
@@ -167,7 +222,8 @@ def add_plan():
     db.execute('INSERT INTO planes (nombre, precio_mensual, precio_anual, sello_destacado) VALUES (?, ?, ?, ?)',
                [request.form['nombre'], request.form['precio_m'], request.form['precio_a'], request.form.get('destacado', 0)])
     db.commit()
-    return redirect(url_for('admin_dashboard'))
+    flash('Plan de suscripción añadido', 'success')
+    return redirect(url_for('admin_dashboard', _anchor='sec-planes'))
 
 @app.route('/admin/plan/delete/<int:id>')
 def delete_plan(id):
@@ -175,7 +231,25 @@ def delete_plan(id):
     db = get_db()
     db.execute('DELETE FROM planes WHERE id = ?', [id])
     db.commit()
-    return redirect(url_for('admin_dashboard'))
+    flash('Plan eliminado', 'warning')
+    return redirect(url_for('admin_dashboard', _anchor='sec-planes'))
+
+@app.route('/admin/plan/edit/<int:id>', methods=['GET', 'POST'])
+def edit_plan(id):
+    if session.get('user_role') != 'admin': return redirect(url_for('login'))
+    db = get_db()
+    if request.method == 'POST':
+        db.execute('''
+            UPDATE planes SET nombre=?, precio_mensual=?, precio_anual=?, sello_destacado=?
+            WHERE id=?
+        ''', [request.form['nombre'], request.form['precio_m'], request.form['precio_a'], 
+              request.form.get('destacado', 0), id])
+        db.commit()
+        flash('Detalles del plan actualizados', 'success')
+        return redirect(url_for('admin_dashboard', _anchor='sec-planes'))
+    
+    plan = query_db('SELECT * FROM planes WHERE id = ?', [id], one=True)
+    return render_template('edit_plan.html', plan=plan)
 
 if __name__ == '__main__':
     from datetime import datetime
