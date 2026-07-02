@@ -9,7 +9,7 @@
         :root {
             --sidebar-width: 240px;
         }
-        body { background: #f0f2f5; margin: 0; display: flex; }
+        body { background: #f0f2f5; margin: 0; display: flex; flex-direction: column; }
         
         .sidebar {
             width: var(--sidebar-width);
@@ -28,25 +28,65 @@
             flex-grow: 1;
             padding: 30px;
             box-sizing: border-box;
-            width: calc(100% - var(--sidebar-width));
             transition: 0.3s;
         }
 
+        .mobile-admin-nav {
+            display: none;
+            background: var(--vue-dark);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            border-bottom: 2px solid var(--vue-green);
+        }
+
+        .mobile-scroll-nav {
+            display: flex;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 10px 5px;
+            gap: 15px;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .mobile-scroll-nav::-webkit-scrollbar { display: none; }
+
+        .nav-item-mobile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+            font-size: 11px;
+            padding: 5px 10px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            min-width: 70px;
+        }
+        
+        .nav-item-mobile span { margin-top: 4px; font-weight: 600; }
+
         @media (max-width: 768px) {
-            .sidebar {
-                width: 70px;
-                padding: 10px;
-                overflow: hidden;
-            }
-            .sidebar h2, .sidebar hr, .sidebar span { display: none; }
-            .sidebar a { text-align: center; font-size: 20px; padding: 15px 0; }
+            body { flex-direction: column; }
+            .sidebar { display: none; }
             .main-content {
-                margin-left: 70px;
-                width: calc(100% - 70px);
+                margin-left: 0;
+                width: 100%;
                 padding: 15px;
             }
+            .mobile-admin-nav { display: block; }
             .grid-stats { grid-template-columns: 1fr; }
-            .form-inline { grid-template-columns: 1fr; }
+            .form-inline { 
+                grid-template-columns: 1fr; 
+                display: flex;
+                flex-direction: column;
+            }
+            .form-inline input, .form-inline select, .form-inline button {
+                width: 100%;
+                margin: 5px 0;
+            }
             .table-container { overflow-x: auto; }
         }
 
@@ -62,6 +102,7 @@
             padding: 25px;
             margin-bottom: 30px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            scroll-margin-top: 80px; /* Offset for sticky header */
         }
 
         h2.vue-text-green { border-bottom: 2px solid var(--vue-green); padding-bottom: 10px; margin-bottom: 20px; }
@@ -88,6 +129,17 @@
     </style>
 </head>
 <body>
+
+    <div class="mobile-admin-nav">
+        <div class="mobile-scroll-nav">
+            <a href="#sec-empresas" class="nav-item-mobile">🏢 <span>Empresas</span></a>
+            <a href="#sec-usuarios" class="nav-item-mobile">👤 <span>Usuarios</span></a>
+            <a href="#sec-rubros" class="nav-item-mobile">📑 <span>Rubros</span></a>
+            <a href="#sec-planes" class="nav-item-mobile">💎 <span>Planes</span></a>
+            <a href="/" class="nav-item-mobile" style="background: rgba(66, 184, 131, 0.2);">🏠 <span>Inicio</span></a>
+            <a href="{{ url_for('logout') }}" class="nav-item-mobile" style="background: rgba(255, 118, 117, 0.2);">🚪 <span>Salir</span></a>
+        </div>
+    </div>
 
     <div class="sidebar">
         <h2 style="color: var(--vue-green)">PEP Admin</h2>
