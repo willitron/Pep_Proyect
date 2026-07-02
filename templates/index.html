@@ -17,6 +17,40 @@
 		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style-responsive.css') }}" />
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/vue-theme.css') }}" />				
 		
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        /* Ensure specific sections have enough padding for the fixed menu */
+        section {
+            padding-top: 80px;
+            margin-top: -80px;
+        }
+        #home { padding-top: 0; margin-top: 0; }
+        
+        /* Mobile menu fixes */
+        .menu-click {
+            display: none;
+            background: var(--vue-dark);
+            position: fixed;
+            top: 60px;
+            left: 0;
+            width: 100%;
+            z-index: 999;
+            padding: 20px 0;
+            text-align: center;
+        }
+        .menu-click li {
+            list-style: none;
+            padding: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .menu-click a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
 </head>
 
 <body>
@@ -52,23 +86,23 @@
     
       <div class="logo" style="color: var(--vue-green)">PEP SYSTEM</div>
       
-      <div class="icon"><a href="#"><img src="{{ url_for('static', filename='img/icons/menu-media.png') }}"/></a></div>
+      <div class="icon" id="mobile-menu-toggle"><a href="javascript:void(0)"><img src="{{ url_for('static', filename='img/icons/menu-media.png') }}"/></a></div>
     
     </div>
    
   </section>
   
-    <ul class="menu-click">
-        <a href="#home"><li>INICIO</li></a>
-        <a href="#about-us"><li>RUBROS</li></a>
-        <a href="#portfolio"><li>EMPRESAS</li></a>
+    <ul class="menu-click" id="mobile-menu">
+        <li><a href="#home">INICIO</a></li>
+        <li><a href="#about-us">RUBROS</a></li>
+        <li><a href="#portfolio">EMPRESAS</a></li>
         {% if session.get('user_role') == 'admin' %}
-        <a href="{{ url_for('admin_dashboard') }}"><li>ADMIN</li></a>
+        <li><a href="{{ url_for('admin_dashboard') }}">ADMIN</a></li>
         {% endif %}
         {% if session.get('user_name') %}
-        <a href="{{ url_for('logout') }}"><li>SALIR ({{ session['user_name'] }})</li></a>
+        <li><a href="{{ url_for('logout') }}">SALIR ({{ session['user_name'] }})</a></li>
         {% else %}
-        <a href="{{ url_for('login') }}"><li>LOGIN</li></a>
+        <li><a href="{{ url_for('login') }}">LOGIN</a></li>
         {% endif %}
     </ul>
    
@@ -90,7 +124,7 @@
         {% endif %}
         
         {% if session.get('user_name') %}
-        <li><a href="{{ url_for('logout') }}">Coger Sesión ({{ session['user_name'] }})</a></li>
+        <li><a href="{{ url_for('logout') }}">SALIR ({{ session['user_name'] }})</a></li>
         {% else %}
         <li><a href="{{ url_for('login') }}">INGRESAR</a></li>
         {% endif %}
@@ -237,6 +271,31 @@
 	<script src="{{ url_for('static', filename='js/jquery.sticky.js') }}"></script> 
 	<script src="{{ url_for('static', filename='js/script.js') }}"></script> 
 
+    <script>
+        $(document).ready(function() {
+            // Toggle menu movil
+            $('#mobile-menu-toggle').click(function(e) {
+                e.preventDefault();
+                $('#mobile-menu').slideToggle();
+            });
+
+            // Cerrar menu mobile al hacer clic en un link
+            $('#mobile-menu a').click(function() {
+                $('#mobile-menu').slideUp();
+            });
+
+            // Forzar smooth scroll en todos los enlaces internos
+            $('a[href^="#"]').on('click', function(event) {
+                var target = $(this.getAttribute('href'));
+                if( target.length ) {
+                    event.preventDefault();
+                    $('html, body').stop().animate({
+                        scrollTop: target.offset().top - 70
+                    }, 1000);
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>
