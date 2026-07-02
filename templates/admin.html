@@ -17,12 +17,38 @@
             color: white;
             height: 100vh;
             position: fixed;
-            padding: 20px;
+            top: 0;
+            left: 0;
+            padding: 25px 15px;
             box-sizing: border-box;
             z-index: 100;
-            transition: 0.3s;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
         }
-        
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            color: #ecf0f1;
+            text-decoration: none;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            transition: 0.3s;
+            font-weight: 500;
+        }
+
+        .sidebar a:hover, .sidebar a.active {
+            background: rgba(66, 184, 131, 0.15);
+            color: var(--vue-green);
+        }
+
+        .sidebar a span.icon-v {
+            margin-right: 12px;
+            font-size: 18px;
+            width: 25px;
+            text-align: center;
+        }
+
         .main-content {
             margin-left: var(--sidebar-width);
             flex-grow: 1;
@@ -162,14 +188,18 @@
     </div>
 
     <div class="sidebar">
-        <h2 style="color: var(--vue-green)">PEP Admin</h2>
-        <hr style="border-color: rgba(255,255,255,0.1)">
-        <a href="/"><span>🏠 Inicio Sitio</span></a>
-        <a href="#sec-empresas"><span>🏢 Empresas</span></a>
-        <a href="#sec-usuarios"><span>👤 Usuarios</span></a>
-        <a href="#sec-rubros"><span>📑 Rubros</span></a>
-        <a href="#sec-planes"><span>💎 Planes</span></a>
-        <a href="{{ url_for('logout') }}" style="margin-top: 40px; color: #ff7675;"><span>🚪 Salir</span></a>
+        <h2 style="color: var(--vue-green); padding-left: 15px; margin-bottom: 20px;">PEP Admin</h2>
+        <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 0 15px 20px 15px;"></div>
+        
+        <a href="/"> <span class="icon-v">🏠</span> Inicio Sitio</a>
+        <a href="#sec-empresas"> <span class="icon-v">🏢</span> Empresas</a>
+        <a href="#sec-usuarios"> <span class="icon-v">👤</span> Usuarios</a>
+        <a href="#sec-rubros"> <span class="icon-v">📑</span> Rubros</a>
+        <a href="#sec-planes"> <span class="icon-v">💎</span> Planes</a>
+        
+        <a href="{{ url_for('logout') }}" style="margin-top: 50px; color: #ff7675;"> 
+            <span class="icon-v">🚪</span> Salir
+        </a>
     </div>
 
     <div class="main-content">
