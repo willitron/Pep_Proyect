@@ -64,6 +64,8 @@ def login():
             session['user_id'] = user['id']
             session['user_name'] = user['nombre']
             session['user_role'] = user['tipo']
+            if user['tipo'] == 'admin':
+                return redirect(url_for('admin_dashboard'))
             return redirect(url_for('index'))
         else:
             return "Login Fallido. Intente admin@example.com / admin123"

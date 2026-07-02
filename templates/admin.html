@@ -20,6 +20,7 @@
             padding: 20px;
             box-sizing: border-box;
             z-index: 100;
+            transition: 0.3s;
         }
         
         .main-content {
@@ -28,6 +29,31 @@
             padding: 30px;
             box-sizing: border-box;
             width: calc(100% - var(--sidebar-width));
+            transition: 0.3s;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+                padding: 10px;
+                overflow: hidden;
+            }
+            .sidebar h2, .sidebar hr, .sidebar span { display: none; }
+            .sidebar a { text-align: center; font-size: 20px; padding: 15px 0; }
+            .main-content {
+                margin-left: 70px;
+                width: calc(100% - 70px);
+                padding: 15px;
+            }
+            .grid-stats { grid-template-columns: 1fr; }
+            .form-inline { grid-template-columns: 1fr; }
+            .table-container { overflow-x: auto; }
+        }
+
+        .table-container { 
+            width: 100%;
+            overflow-x: auto; 
+            -webkit-overflow-scrolling: touch;
         }
 
         .section-card {
@@ -66,12 +92,12 @@
     <div class="sidebar">
         <h2 style="color: var(--vue-green)">PEP Admin</h2>
         <hr style="border-color: rgba(255,255,255,0.1)">
-        <a href="/">🏠 Inicio Sitio</a>
-        <a href="#sec-empresas">🏢 Empresas</a>
-        <a href="#sec-usuarios">👤 Usuarios</a>
-        <a href="#sec-rubros">📑 Rubros</a>
-        <a href="#sec-planes">💎 Planes</a>
-        <a href="{{ url_for('logout') }}" style="margin-top: 40px; color: #ff7675;">🚪 Salir</a>
+        <a href="/"><span>🏠 Inicio Sitio</span></a>
+        <a href="#sec-empresas"><span>🏢 Empresas</span></a>
+        <a href="#sec-usuarios"><span>👤 Usuarios</span></a>
+        <a href="#sec-rubros"><span>📑 Rubros</span></a>
+        <a href="#sec-planes"><span>💎 Planes</span></a>
+        <a href="{{ url_for('logout') }}" style="margin-top: 40px; color: #ff7675;"><span>🚪 Salir</span></a>
     </div>
 
     <div class="main-content">
@@ -101,22 +127,24 @@
                 </select>
                 <button type="submit" class="btn-add">Añadir Empresa</button>
             </form>
-            <table>
-                <thead>
-                    <tr><th>Empresa</th><th>Dueño</th><th>Rubro</th><th>Estado</th><th>Acciones</th></tr>
-                </thead>
-                <tbody>
-                    {% for e in empresas %}
-                    <tr>
-                        <td>{{ e.razon_social }}</td>
-                        <td>{{ e.usuario_nombre }}</td>
-                        <td>{{ e.rubro_nombre }}</td>
-                        <td>{{ e.estado }}</td>
-                        <td><a href="{{ url_for('delete_empresa', id=e.id) }}" class="btn-del">Eliminar</a></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Empresa</th><th>Dueño</th><th>Rubro</th><th>Estado</th><th>Acciones</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for e in empresas %}
+                        <tr>
+                            <td>{{ e.razon_social }}</td>
+                            <td>{{ e.usuario_nombre }}</td>
+                            <td>{{ e.rubro_nombre }}</td>
+                            <td>{{ e.estado }}</td>
+                            <td><a href="{{ url_for('delete_empresa', id=e.id) }}" class="btn-del">Eliminar</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <!-- SECCION USUARIOS -->
@@ -132,21 +160,23 @@
                 </select>
                 <button type="submit" class="btn-add">Añadir Usuario</button>
             </form>
-            <table>
-                <thead>
-                    <tr><th>Nombre</th><th>Email</th><th>Tipo</th><th>Acciones</th></tr>
-                </thead>
-                <tbody>
-                    {% for u in usuarios %}
-                    <tr>
-                        <td>{{ u.nombre }}</td>
-                        <td>{{ u.email }}</td>
-                        <td>{{ u.tipo }}</td>
-                        <td><a href="{{ url_for('delete_usuario', id=u.id) }}" class="btn-del">Eliminar</a></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Nombre</th><th>Email</th><th>Tipo</th><th>Acciones</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for u in usuarios %}
+                        <tr>
+                            <td>{{ u.nombre }}</td>
+                            <td>{{ u.email }}</td>
+                            <td>{{ u.tipo }}</td>
+                            <td><a href="{{ url_for('delete_usuario', id=u.id) }}" class="btn-del">Eliminar</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <!-- SECCION RUBROS -->
@@ -157,20 +187,22 @@
                 <input type="text" name="descripcion" placeholder="Descripción">
                 <button type="submit" class="btn-add">Añadir Rubro</button>
             </form>
-            <table>
-                <thead>
-                    <tr><th>Nombre</th><th>Descripción</th><th>Acciones</th></tr>
-                </thead>
-                <tbody>
-                    {% for r in rubros %}
-                    <tr>
-                        <td>{{ r.nombre }}</td>
-                        <td>{{ r.descripcion }}</td>
-                        <td><a href="{{ url_for('delete_rubro', id=r.id) }}" class="btn-del">Eliminar</a></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Nombre</th><th>Descripción</th><th>Acciones</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for r in rubros %}
+                        <tr>
+                            <td>{{ r.nombre }}</td>
+                            <td>{{ r.descripcion }}</td>
+                            <td><a href="{{ url_for('delete_rubro', id=r.id) }}" class="btn-del">Eliminar</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <!-- SECCION PLANES -->
@@ -183,22 +215,24 @@
                 <label><input type="checkbox" name="destacado" value="1"> Destacado</label>
                 <button type="submit" class="btn-add">Añadir Plan</button>
             </form>
-            <table>
-                <thead>
-                    <tr><th>Nombre</th><th>P. Mensual</th><th>P. Anual</th><th>Destacado</th><th>Acciones</th></tr>
-                </thead>
-                <tbody>
-                    {% for p in planes %}
-                    <tr>
-                        <td>{{ p.nombre }}</td>
-                        <td>${{ p.precio_mensual }}</td>
-                        <td>${{ p.precio_anual }}</td>
-                        <td>{{ 'Sí' if p.sello_destacado else 'No' }}</td>
-                        <td><a href="{{ url_for('delete_plan', id=p.id) }}" class="btn-del">Eliminar</a></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Nombre</th><th>P. Mensual</th><th>P. Anual</th><th>Destacado</th><th>Acciones</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for p in planes %}
+                        <tr>
+                            <td>{{ p.nombre }}</td>
+                            <td>${{ p.precio_mensual }}</td>
+                            <td>${{ p.precio_anual }}</td>
+                            <td>{{ 'Sí' if p.sello_destacado else 'No' }}</td>
+                            <td><a href="{{ url_for('delete_plan', id=p.id) }}" class="btn-del">Eliminar</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
 
     </div>
